@@ -52,4 +52,4 @@ runs:
         git commit -m "verion file added"
         git push origin version
       env:
-        ${{ inputs.token }}
+        GITHUB_TOKEN: ${{ inputs.token }}
