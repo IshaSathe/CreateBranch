@@ -36,6 +36,7 @@ runs:
 
         # Create or switch to branch
         if [ "$branch_exists" = true ]; then
+          git fetch origin
           git checkout ${{ inputs.version-file-branch }}
           git pull origin ${{ inputs.version-file-branch }}
         else
