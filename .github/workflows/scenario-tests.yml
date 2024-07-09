@@ -6,7 +6,7 @@ on:
 jobs:
   Scenario_1:
     name: Default Inputs
-    runs-on: [small-linux]
+    runs-on: ubuntu-latest
     steps:
       - id: checkout
         name: Checkout
