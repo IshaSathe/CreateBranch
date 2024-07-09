@@ -16,4 +16,4 @@ jobs:
         name: Create Branch Default Inputs
         uses: ./
         with:
-          version: "1.2.3"
+          token: $ {{ secrets.GITHUB_TOKEN }}
