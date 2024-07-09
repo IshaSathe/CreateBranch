@@ -57,7 +57,7 @@ runs:
         fi
 
     - name: Add or overwrite version file in branch
-      if: env.branch_exists == "true"
+      if: env.branch_exists == 'true'
       shell: bash
       run: |
         echo "${{ inputs.initial-version }}" > version
