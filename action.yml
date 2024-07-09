@@ -51,4 +51,9 @@ runs:
           git commit -m "CI: create initial file"
           git push --set-upstream origin "$VERSION_BRANCH"
         fi
+
+    - name: Checkout repository again
+      uses: actions/checkout@v4
+      with:
+        token: ${{ inputs.token }}
         
