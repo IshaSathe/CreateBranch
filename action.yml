@@ -20,7 +20,17 @@ runs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Check if branch exists
+      id: check-branch
+      run: |
+        if git ls-remote --heads origin version; then
+          echo "branch_exists=true" >> $GITHUB_ENV
+        else
+          echo "branches_exists=false" >> $GITHUB_ENV
+        fi
+
     - name: Create new branch
+      if: env.branch_exists == 'false'
       shell: bash
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
