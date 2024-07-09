@@ -24,32 +24,43 @@ runs:
         # Check if branch exists
         if git ls-remote --heads origin version; then
           branch_exists=true
+          echo "branch exists"
         else
           branch_exists=false
+          echo "branch does not exist"
         fi
 
         # Create or switch to branch
         if [ "$branch_exists" = true ]; then
+          echo "branch exists, switching to branch"
           git fetch origin
           git checkout version
           git pull origin version
         else
+          echo "branch does not exist creating branch"
           git checkout --orphan version
           git rm -rf .
-          echo "0.1.0" > verison
+          echo "branch created"
+          echo "0.1.0" > version
+          echo "info added to file"
           git add version
+          echo "file added"
           git commit -m "Create blank branch and add file"
           git push origin version
+          echo "pushed"
         fi
 
         # Add or overwrite file in branch
         if [ "$branch_exists" = true ]; then
           echo "0.1.0" > version
+          echo "info added to file"
           git add version
+          echo "file added"
           if git diff-index --quiet HEAD --; then
             echo "No changes to commit"
           else
             git commit -m "Add or update file in branch version"
             git push origin version
+            echo "pushed"
           fi
         fi
