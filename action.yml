@@ -30,8 +30,7 @@ runs:
       run: |
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-action[bot]"
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
+        git remote set-url origin https://x-access-token:${{ inputs.github-token }}@github.com/${{ github.repository }}
 
     - name: Check if branch exists
       id: check-branch
@@ -54,8 +53,6 @@ runs:
           git checkout -b version
           git push origin version
         fi
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
 
     - name: Add or overwrite version file
       shell: bash
@@ -64,8 +61,6 @@ runs:
         git add version
         git commit -m "add or update file in version"
         git push origin version
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
 
     - name: Add version file
       shell: bash
@@ -74,5 +69,3 @@ runs:
         git add version
         git commit -m "verion file added"
         git push origin version
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
