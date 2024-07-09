@@ -1,22 +1,17 @@
----
-name: "Create Branch Action"
-description: "Adds a branch and file to branch if it does not exist"
-author: "Isha Sathe"
-
+name: 'Create or Update Branch and Add File'
+description: 'Creates or updates a branch in the repository and adds a file, overwriting if it exists'
 inputs:
-  branch-name:
-    description: "branch name"
-  token:
-    description: "token"
-    required: true
+  version-file-branch:
+    description: 'The name of the branch'
+    default: "version"
+  version-file:
+    description: 'The path of the file to add'
   initial-version:
-    description: "init version"
+    description: 'The content of the file to add'
     default: "0.1.0"
-
-outputs:
-  branch-name:
-    description: "branch name"
-
+  token:
+    description: 'GitHub token'
+    required: true
 runs:
   using: 'composite'
   steps:
@@ -25,42 +20,40 @@ runs:
       with:
         token: ${{ inputs.token }}
 
-    - name: Configure git
-      shell: bash
+    - name: Create or Update Branch and Add File
       run: |
+        # Configure Git
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-action[bot]"
+        git config --global user.name "github-actions[bot]"
 
-    - name: Check if branch exists
-      id: check-branch
-      shell: bash
-      run: |
-        if git ls-remote --heads origin version; then
-          echo "branch_exists=true" >> $GITHUB_ENV
+        # Check if branch exists
+        if git ls-remote --heads origin ${{ inputs.version-file-branch }}; then
+          branch_exists=true
         else
-          echo "branches_exists=false" >> $GITHUB_ENV
+          branch_exists=false
         fi
 
-    - name: Create new branch or switch to branch and add file
-      shell: bash
-      run: |
-        if ["${{ env.branch_exists }}" = "true" ]; then
-          git checkout version
-          git pull origin version
+        # Create or switch to branch
+        if [ "$branch_exists" = true ]; then
+          git checkout ${{ inputs.version-file-branch }}
+          git pull origin ${{ inputs.version-file-branch }}
         else
-          git checkout --orphan version
+          git checkout --orphan ${{ inputs.version-file-branch }}
           git rm -rf .
-          echo "${{ inputs.initial-version }}" > version
-          git add version
-          git commit -m "create version branch and add file"
-          git push origin version
+          echo "${{ inputs.initial-version }}" > ${{ inputs.version-file }}
+          git add ${{ inputs.version-file }}
+          git commit -m "Create blank branch and add file"
+          git push origin ${{ inputs.version-file-branch }}
         fi
 
-    - name: Add or overwrite version file in branch
-      if: env.branch_exists == 'true'
-      shell: bash
-      run: |
-        echo "${{ inputs.initial-version }}" > version
-        git add version
-        git commit -m "add or update file in version"
-        git push origin version
+        # Add or overwrite file in branch
+        if [ "$branch_exists" = true ]; then
+          echo "${{ inputs.initial-version }}" > ${{ inputs.version-file }}
+          git add ${{ inputs.version-file }}
+          if git diff-index --quiet HEAD --; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add or update file in branch ${{ inputs.version-file-branch }}"
+            git push origin ${{ inputs.version-file-branch }}
+          fi
+        fi
