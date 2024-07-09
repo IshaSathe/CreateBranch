@@ -21,6 +21,7 @@ runs:
         token: ${{ inputs.token }}
 
     - name: Create or Update Branch and Add File
+      shell: bash
       run: |
         # Configure Git
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
