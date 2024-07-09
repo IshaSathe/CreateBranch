@@ -41,8 +41,6 @@ runs:
         else
           echo "branches_exists=false" >> $GITHUB_ENV
         fi
-      env:
-        GITHUB_TOKEN: ${{ inputs.token }}
 
     - name: Create new branch or switch to branch
       shell: bash
@@ -60,12 +58,4 @@ runs:
         echo "${{ inputs.initial-version }}" > version
         git add version
         git commit -m "add or update file in version"
-        git push origin version
-
-    - name: Add version file
-      shell: bash
-      run: |
-        echo "$ {{ inputs.initial-version }}" > version
-        git add version
-        git commit -m "verion file added"
         git push origin version
