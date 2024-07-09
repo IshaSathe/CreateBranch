@@ -9,6 +9,9 @@ inputs:
   token:
     description: "token"
     required: true
+  initial-version:
+    description: "init version"
+    default: "0.1.0"
 
 outputs:
   branch-name:
@@ -40,3 +43,13 @@ runs:
         git push origin version
       env:
         GITHUB_TOKEN: ${{ inputs.token }}
+
+    - name: Add version file
+      shell: bash
+      run: |
+        echo "$ {{ inputs.initial-version }}" > version
+        git add version
+        git commit -m "verion file added"
+        git push origin version
+      env:
+        ${{ inputs.token }}
