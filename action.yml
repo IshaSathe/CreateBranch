@@ -49,8 +49,8 @@ runs:
         fi
 
         # Debug - Print the file path and its contents
-        echo "File path: ${{ inputs.file-path }}"
-        cat "${{ inputs.file-path }}"
+        echo "File path: ${{ inputs.version-file }}"
+        cat "${{ inputs.version-file }}"
 
         # Add or overwrite file in branch
         if [ "$branch_exists" = true ]; then
