@@ -34,7 +34,7 @@ runs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@github.com"
         # determine if version branch exists
-        if[ -n "$(git ls-remote --heads origin refs/heads/$VERSION_BRANCH)" ]; then
+        if[ -n "$(git ls-remote --heads origin refs/heads/${VERSION_BRANCH})" ]; then
           git checkout ${VERSION_BRANCH}
           # determine if version file exists - if not, initialize it
           if[ ! -f "$VERSION_FILE_PATH" ]; then
