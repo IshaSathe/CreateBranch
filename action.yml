@@ -6,6 +6,9 @@ author: "Isha Sathe"
 inputs:
   branch-name:
     description: "branch name"
+  token:
+    description: "token"
+    required: true
 
 outputs:
   branch-name:
@@ -25,4 +28,4 @@ runs:
         git checkout -b version
         git push origin version
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.token }}
