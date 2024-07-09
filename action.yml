@@ -41,17 +41,23 @@ runs:
           echo "branches_exists=false" >> $GITHUB_ENV
         fi
 
-    - name: Create new branch or switch to branch
+    - name: Create new branch or switch to branch and add file
       shell: bash
       run: |
         if ["${{ env.branch_exists }}" = "true" ]; then
           git checkout version
+          git pull origin version
         else
-          git checkout -b version
+          git checkout --orphan version
+          git rm -rf .
+          echo "${{ inputs.initial-version }}" > version
+          git add version
+          git commit -m "create version branch and add file"
           git push origin version
         fi
 
-    - name: Add or overwrite version file
+    - name: Add or overwrite version file in branch
+      if: env.branch_exists == "true"
       shell: bash
       run: |
         echo "${{ inputs.initial-version }}" > version
