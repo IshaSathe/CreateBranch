@@ -22,7 +22,7 @@ runs:
         git config --global user.name "github-actions[bot]"
 
         # Check if branch exists
-        git pull
+        git fetch origin
         if git ls-remote --heads origin version; then
           branch_exists=true
           echo "branch exists"
