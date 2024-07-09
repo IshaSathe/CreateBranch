@@ -28,7 +28,7 @@ runs:
         git config --global user.name "github-actions[bot]"
 
         # Check if branch exists
-        if git ls-remote --heads origin ${{ inputs.version-file-branch }}; then
+        if git ls-remote --heads origin version; then
           branch_exists=true
         else
           branch_exists=false
@@ -37,29 +37,25 @@ runs:
         # Create or switch to branch
         if [ "$branch_exists" = true ]; then
           git fetch origin
-          git checkout ${{ inputs.version-file-branch }}
-          git pull origin ${{ inputs.version-file-branch }}
+          git checkout version
+          git pull origin version
         else
-          git checkout --orphan ${{ inputs.version-file-branch }}
+          git checkout --orphan version
           git rm -rf .
-          echo "${{ inputs.initial-version }}" > ${{ inputs.version-file }}
-          git add ${{ inputs.version-file }}
+          echo "0.1.0" > verison
+          git add version
           git commit -m "Create blank branch and add file"
-          git push origin ${{ inputs.version-file-branch }}
+          git push origin version
         fi
-
-        # Debug - Print the file path and its contents
-        echo "File path: ${{ inputs.version-file }}"
-        cat "${{ inputs.version-file }}"
 
         # Add or overwrite file in branch
         if [ "$branch_exists" = true ]; then
-          echo "${{ inputs.initial-version }}" > ${{ inputs.version-file }}
-          git add ${{ inputs.version-file }}
+          echo "0.1.0" > version
+          git add version
           if git diff-index --quiet HEAD --; then
             echo "No changes to commit"
           else
-            git commit -m "Add or update file in branch ${{ inputs.version-file-branch }}"
-            git push origin ${{ inputs.version-file-branch }}
+            git commit -m "Add or update file in branch version"
+            git push origin version
           fi
         fi
