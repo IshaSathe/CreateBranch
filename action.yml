@@ -2,9 +2,17 @@ name: 'Create or Update Branch and Add File'
 description: 'Creates or updates a branch in the repository and adds a file, overwriting if it exists'
 
 inputs:
+  initial-version:
+    description: "ver"
+  version-file:
+    description: "ver file"
+  version-file-branch:
+    description: "branch"
   token:
     description: 'GitHub token'
     required: true
+  source-repo:
+    description: "source repo"
 
 runs:
   using: 'composite'
@@ -16,52 +24,31 @@ runs:
 
     - name: Create or Update Branch and Add File
       shell: bash
+      env:
+        INITIAL_VERSION: "${{ inputs.initial-version }}"
+        VERSION_FILE_PATH: "${{ inputs.version-file }}"
+        VERSION_BRANCH: "${{ inputs.version-file-branch }}"
+        GITHUB_TOKEN: "${{ inputs.token }}"
+        SOURCE: "${{ inputs.source-repo }}"
       run: |
-        # Configure Git
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git config --global user.name "github-actions[bot]"
-
-        # Check if branch exists
-        git fetch origin
-        if git ls-remote --heads origin version | grep -sw "refs/heads/version"; then
-          branch_exists=true
-          echo "branch exists"
-        else
-          branch_exists=false
-          echo "branch does not exist"
-        fi
-
-        # Create or switch to branch
-        if [ "$branch_exists" = true ]; then
-          echo "branch exists, switching to branch"
-          git fetch origin
-          git checkout version
-          git pull origin version
-        else
-          echo "branch does not exist creating branch"
-          git checkout --orphan version
-          git rm -rf .
-          echo "branch created"
-          echo "0.1.0" > version
-          echo "info added to file"
-          git add version
-          echo "file added"
-          git commit -m "Create blank branch and add file"
-          git push origin version
-          echo "pushed"
-        fi
-
-        # Add or overwrite file in branch
-        if [ "$branch_exists" = true ]; then
-          echo "0.1.0" > version
-          echo "info added to file"
-          git add version
-          echo "file added"
-          if git diff-index --quiet HEAD --; then
-            echo "No changes to commit"
-          else
-            git commit -m "Add or update file in branch version"
-            git push origin version
-            echo "pushed"
+        git config --global user.email "github-actions[bot]@github.com"
+        # determine if version branch exists
+        if[ -n "$(git ls-remote --heads origin refs/heads/$VERSION_BRANCH)" ]; then
+          git checkout ${VERSION_BRANCH}
+          # determine if version file exists - if not, initialize it
+          if[ ! -f "$VERSION_FILE_PATH" ]; then
+            echo "${INITIAL_VERSION}" > ${VERSION_FILE_PATH}
+            git add ${VERSION_FILE_PATH}
+            git commit -m "CI: create initial file"
+            git push --set-upstream origin ${VERSION_BRANCH}
           fi
+        else
+          git checkout --orphan ${VERSION_BRANCH}
+          git rm -rf .
+          echo "${INITIAL_VERSION}" > ${VERSION_FILE_PATH}
+          git add ${VERSION_FILE_PATH}
+          git commit -m "CI: create initial file"
+          git push --set-upstream origin ${VERSION_BRANCH}
         fi
+        
