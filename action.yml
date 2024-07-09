@@ -48,6 +48,10 @@ runs:
           git push origin ${{ inputs.version-file-branch }}
         fi
 
+        # Debug - Print the file path and its contents
+        echo "File path: ${{ inputs.file-path }}"
+        cat "${{ inputs.file-path }}"
+
         # Add or overwrite file in branch
         if [ "$branch_exists" = true ]; then
           echo "${{ inputs.initial-version }}" > ${{ inputs.version-file }}
