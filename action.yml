@@ -37,7 +37,7 @@ runs:
         if[ -n "$(git ls-remote --heads origin refs/heads/${VERSION_BRANCH})" ]; then
           git checkout ${VERSION_BRANCH}
           # determine if version file exists - if not, initialize it
-          if[ ! -f "$VERSION_FILE_PATH" ]; then
+          if[ ! -f "${VERSION_FILE_PATH}" ]; then
             echo "${INITIAL_VERSION}" > ${VERSION_FILE_PATH}
             git add ${VERSION_FILE_PATH}
             git commit -m "CI: create initial file"
