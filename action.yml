@@ -1,0 +1,48 @@
+---
+name: "Create Branch Action"
+description: "Adds a branch and file to branch if it does not exist"
+author: "Isha Sathe"
+
+inputs:
+  bump:
+    description: "bump type"
+    default: "patch"
+  prerelease-name:
+    description: "name"
+  version:
+    description: "version"
+  version-file:
+    description: "path of file with curr version"
+  version-file-branch:
+    description: "branch with version file"
+    default: "version"
+  update-version-file:
+    description: "update file yes or no"
+    default: true
+  source-repo:
+    description: "if version file is not in caller workflow repo use this"
+    default: "${{ github.repository }}"
+  github-pat-vault-path:
+    description: "vault"
+  vault-token:
+    description: "token"
+  initial-version:
+    description: "init version to put in file"
+  create-version-file:
+    description: "create file yes or no"
+    default: false
+
+runs:
+  using: 'Composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Create new branch 
+      run: |
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git config --global user.name "github-actions[bot]"
+        git checkout -b version
+        git push origin version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
