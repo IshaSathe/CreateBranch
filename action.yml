@@ -23,7 +23,7 @@ runs:
 
         # Check if branch exists
         git fetch origin
-        if git ls-remote --heads origin version; then
+        if git ls-remote --heads origin version | grep -sw "refs/heads/version"; then
           branch_exists=true
           echo "branch exists"
         else
