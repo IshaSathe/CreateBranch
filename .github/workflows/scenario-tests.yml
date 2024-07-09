@@ -1,6 +1,9 @@
 ---
 name: Scenario Tests
 on:
+  push:
+    branches:
+    - main
   workflow_dispatch:
 
 permissions:
@@ -19,7 +22,4 @@ jobs:
         name: Create Branch Default Inputs
         uses: ./
         with:
-          version-file: "version"
-          version-file-branch: "version"
-          initial-version: "0.1.0"
           token: ${{ secrets.GITHUB_TOKEN }}
