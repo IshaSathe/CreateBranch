@@ -1,0 +1,19 @@
+---
+name: Scenario Tests
+on:
+  workflow_dispatch:
+
+jobs:
+  Scenario_1:
+    name: Default Inputs
+    runs-on: [small-linux]
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v4
+
+      - id: create_branch_default_inputs
+        name: Create Branch Default Inputs
+        uses: ./
+        with:
+          version: "1.2.3"
