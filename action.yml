@@ -22,6 +22,7 @@ runs:
 
     - name: Check if branch exists
       id: check-branch
+      shell: bash
       run: |
         if git ls-remote --heads origin version; then
           echo "branch_exists=true" >> $GITHUB_ENV
