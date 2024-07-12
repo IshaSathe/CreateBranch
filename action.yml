@@ -64,7 +64,7 @@ runs:
       shell: bash
       run: |
         echo "${{ inputs.initial-version }}" > version
-        git checkout -b ${{ version-file-branch }}
+        git checkout -b ${{ inputs.version-file-branch }}
 
     - name: Add and commit changes
       uses: EndBug/add-and-commit@v9
@@ -73,4 +73,4 @@ runs:
         author_email: "github-actions[bot]@users.noreply.github.com"
         message: "add version file"
         push: true
-        branch: "${{ version-file-branch }}"
+        branch: "${{ inputs.version-file-branch }}"
