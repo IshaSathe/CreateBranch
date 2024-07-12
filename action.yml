@@ -17,43 +17,60 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        token: ${{ inputs.token }}
+    # - name: Checkout repository
+    #   uses: actions/checkout@v4
+    #   with:
+    #     token: ${{ inputs.token }}
 
-    - name: Create or Update Branch and Add File
+    # - name: Create or Update Branch and Add File
+    #   shell: bash
+    #   env:
+    #     INITIAL_VERSION: "${{ inputs.initial-version }}"
+    #     VERSION_FILE_PATH: "${{ inputs.version-file }}"
+    #     VERSION_BRANCH: "${{ inputs.version-file-branch }}"
+    #     GITHUB_TOKEN: "${{ inputs.token }}"
+    #     SOURCE: "${{ inputs.source-repo }}"
+    #   run: |
+    #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    #     git config --global user.name "github-actions[bot]"
+    #     # determine if version branch exists
+    #     if [ -n "$(git ls-remote --heads origin refs/heads/"$VERSION_BRANCH")" ]; then
+    #       git checkout $VERSION_BRANCH
+    #       # determine if version file exists - if not, initialize it
+    #       if [ ! -f "$VERSION_FILE_PATH" ]; then
+    #         echo "$INITIAL_VERSION" > $VERSION_FILE_PATH
+    #         git add $VERSION_FILE_PATH
+    #         git commit -m "CI: create initial file"
+    #         git push --set-upstream origin $VERSION_BRANCH
+    #       fi
+    #     else
+    #       git checkout --orphan $VERSION_BRANCH
+    #       git rm -rf .
+    #       echo "$INITIAL_VERSION" > "$VERSION_FILE_PATH"
+    #       git add "$VERSION_FILE_PATH"
+    #       git commit -m "CI: create initial file"
+    #       git push --set-upstream origin "$VERSION_BRANCH"
+    #     fi
+
+    # - name: Checkout repository again
+    #   uses: actions/checkout@v4
+    #   with:
+    #     token: ${{ inputs.token }}
+
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+
+    - name: Create File
       shell: bash
-      env:
-        INITIAL_VERSION: "${{ inputs.initial-version }}"
-        VERSION_FILE_PATH: "${{ inputs.version-file }}"
-        VERSION_BRANCH: "${{ inputs.version-file-branch }}"
-        GITHUB_TOKEN: "${{ inputs.token }}"
-        SOURCE: "${{ inputs.source-repo }}"
       run: |
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-        git config --global user.name "github-actions[bot]"
-        # determine if version branch exists
-        if [ -n "$(git ls-remote --heads origin refs/heads/"$VERSION_BRANCH")" ]; then
-          git checkout $VERSION_BRANCH
-          # determine if version file exists - if not, initialize it
-          if [ ! -f "$VERSION_FILE_PATH" ]; then
-            echo "$INITIAL_VERSION" > $VERSION_FILE_PATH
-            git add $VERSION_FILE_PATH
-            git commit -m "CI: create initial file"
-            git push --set-upstream origin $VERSION_BRANCH
-          fi
-        else
-          git checkout --orphan $VERSION_BRANCH
-          git rm -rf .
-          echo "$INITIAL_VERSION" > "$VERSION_FILE_PATH"
-          git add "$VERSION_FILE_PATH"
-          git commit -m "CI: create initial file"
-          git push --set-upstream origin "$VERSION_BRANCH"
-        fi
+        echo "${{ inputs.initial-version }}" > version
+        git checkout -b ${{ version-file-branch }}
 
-    - name: Checkout repository again
-      uses: actions/checkout@v4
+    - name: Add and commit changes
+      uses: EndBug/add-and-commit@v9
       with:
-        token: ${{ inputs.token }}
-        
+        author_name: "github-actions[bot]"
+        author_email: "github-actions[bot]@users.noreply.github.com"
+        message: "add version file"
+        push: true
+        branch: ${{ version-file-branch }}
