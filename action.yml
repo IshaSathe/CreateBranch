@@ -73,4 +73,4 @@ runs:
         author_email: "github-actions[bot]@users.noreply.github.com"
         message: "add version file"
         push: true
-        branch: ${{ version-file-branch }}
+        branch: "${{ version-file-branch }}"
