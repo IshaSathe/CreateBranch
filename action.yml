@@ -60,7 +60,7 @@ runs:
         else
           echo "version branch $VERSION_FILE_BRANCH NOT found"
           if [ "$CREATE_VERSION_FILE" ]; then
-            git checkout --orphan "$VERSION_FILE_BRANCH"
+            git switch --orphan "$VERSION_FILE_BRANCH"
             echo "$INITIAL_VERSION" > "$VERSION_FILE"
             echo "file and branch add"
           else
