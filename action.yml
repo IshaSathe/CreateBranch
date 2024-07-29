@@ -64,7 +64,7 @@ runs:
       shell: bash
       run: |
         echo "${{ inputs.initial-version }}" > version
-        git checkout --orphan ${{ inputs.version-file-branch }}
+        # git checkout --orphan ${{ inputs.version-file-branch }}
 
     - name: Add and commit changes
       uses: EndBug/add-and-commit@v9
