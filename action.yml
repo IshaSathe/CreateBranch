@@ -10,7 +10,7 @@ inputs:
     description: "branch"
   source-repo:
     description: "source repo"
-    default: "${{ github.repository }}
+    default: "${{ github.repository }}"
   create-version-file:
     description: "create or no"
     default: true
