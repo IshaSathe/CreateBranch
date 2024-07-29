@@ -10,6 +10,7 @@ inputs:
     description: "branch"
   source-repo:
     description: "source repo"
+    default: "${{ github.repository }}
   create-version-file:
     description: "create or no"
     default: true
@@ -21,8 +22,14 @@ runs:
     - name: pre_setup
       shell: bash
       run: echo "CHECKOUT_PATH="$(date +%s%3N)"" >> "$GITHUB_OUTPUT"
+      
     - name: Checkout Repo
       uses: actions/checkout@v4
+      with:
+        repository: "${{ inputs.source-repo }}"
+        path: "init-${{ steps.pre_setup.outputs.CHECKOUT_PATH }}"
+        ref: ${{ github.ref }}
+        token: ${{ github.token }}
 
     - name: Find Branch and File
       shell: bash
