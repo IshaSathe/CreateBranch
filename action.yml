@@ -59,7 +59,7 @@ runs:
           fi
         else
           if [ "$CREATE_VERSION_FILE" ]; then
-            git switch --orphan "$VERSION_FILE_BRANCH"
+            git checkout --orphan "$VERSION_FILE_BRANCH"
             echo "$INITIAL_VERSION" > "$VERSION_FILE"
             echo "file and branch add"
           else
