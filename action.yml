@@ -74,6 +74,6 @@ runs:
         author_name: "github-actions[bot]"
         author_email: "github-actions[bot]@users.noreply.github.com"
         cwd: "./init-${{ steps.pre_setup.outputs.CHECKOUT_PATH }}"
-        push: "--set-upstream origin ${{ inputs.version-file-branch }}"
+        push: "true"
         pull: "--ff"
         message: "add version file"
