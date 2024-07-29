@@ -73,4 +73,5 @@ runs:
       with:
         author_name: "github-actions[bot]"
         author_email: "github-actions[bot]@users.noreply.github.com"
+        cwd: "./init-${{ steps.pre_setup.outputs.CHECKOUT_PATH }}"
         message: "add version file"
