@@ -1,0 +1,28 @@
+---
+name: Scenario Tests
+on:
+  push:
+    branches:
+    - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  Scenario_1:
+    name: Default Inputs
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v4
+
+      - id: create_branch_default_inputs
+        name: Create Branch Default Inputs
+        uses: ./
+        with:
+          initial-version: "0.1.0"
+          version-file: "version"
+          version-file-branch: "version"
+          token: ${{ secrets.GITHUB_TOKEN }}

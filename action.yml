@@ -1,0 +1,78 @@
+name: 'Create or Update Branch and Add File'
+description: 'Creates or updates a branch in the repository and adds a file, overwriting if it exists'
+
+inputs:
+  initial-version:
+    description: "ver"
+  version-file:
+    description: "ver file"
+  version-file-branch:
+    description: "branch"
+  source-repo:
+    description: "source repo"
+    default: "${{ github.repository }}"
+  create-version-file:
+    description: "create or no"
+    default: true
+
+runs:
+  using: 'composite'
+  steps:
+
+    - name: pre_setup
+      shell: bash
+      run: echo "CHECKOUT_PATH="$(date +%s%3N)"" >> "$GITHUB_OUTPUT"
+      
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+      with:
+        repository: "${{ inputs.source-repo }}"
+        path: "init-${{ steps.pre_setup.outputs.CHECKOUT_PATH }}"
+        ref: ${{ github.ref }}
+        token: ${{ github.token }}
+
+    - name: Find Branch and File
+      shell: bash
+      working-directory: "init-${{ steps.pre_setup.outputs.CHECKOUT_PATH }}"
+      env:
+        VERSION_FILE_BRANCH: "${{ inputs.version-file-branch }}"
+        VERSION_FILE: "${{ inputs.version-file }}"
+        CREATE_VERSION_FILE: "${{ inputs.create-version-file }}"
+        INITIAL_VERSION: "${{ inputs.initial-version }}"
+      run: |
+        git fetch
+        git remote update
+        if [ -n "$(git ls-remote --heads origin refs/heads/"VERSION_FILE_BBRANCH")" ]; then
+          echo "version branch found"
+          git switch "$VERSION_FILE_BRANCH"
+          if [ -f "$VERSION_FILE" ]; then
+            echo "version file found"
+          else
+            echo "version file not found"
+            if [ "$CREATE_VERSION_FILE" ]; then
+              echo "$INITIAL_VERSION" > "$VERSION_FILE"
+              echo "file and branch add"
+            else
+              echo "end"
+              exit 0
+            fi
+          fi
+        else
+          if [ "$CREATE_VERSION_FILE" ]; then
+            git checkout --orphan "$VERSION_FILE_BRANCH"
+            echo "$INITIAL_VERSION" > "$VERSION_FILE"
+            echo "file and branch add"
+          else
+            echo "end"
+            exit 0
+          fi
+        fi
+
+    - name: Add and commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        author_name: "github-actions[bot]"
+        author_email: "github-actions[bot]@users.noreply.github.com"
+        cwd: "./init-${{ steps.pre_setup.outputs.CHECKOUT_PATH }}"
+        push: "--set-upstream origin ${{ inputs.version-file-branch }}"
+        message: "add version file"
